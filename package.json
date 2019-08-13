@@ -1,0 +1,29 @@
+{
+  "name": "image-uploader",
+  "version": "1.0.0",
+  "description": "Service to transform and save image to external storage",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon -w src src/index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alscherbina/image-uploader.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alscherbina/image-uploader/issues"
+  },
+  "homepage": "https://github.com/alscherbina/image-uploader#readme",
+  "devDependencies": {
+    "eslint": "^6.1.0",
+    "eslint-config-airbnb": "^18.0.0",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.14.3",
+    "eslint-plugin-react-hooks": "^1.7.0",
+    "prettier": "^1.18.2"
+  }
+}
