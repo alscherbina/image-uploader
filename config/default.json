@@ -1,0 +1,4 @@
+{
+  "allowedContentTypes": ["image/png", "image/jpg"],
+  "maxFIleSizeInBytes": 32000000
+}

@@ -1,19 +1,42 @@
+require('appmetrics-dash').attach();
 const { createServer } = require('http');
 const fs = require('fs');
-const UPLOAD_DIR = 'upload';
-const SERVER_PORT = 8080;
+const url = require('url');
+const config = require('./config');
+const { getResizer } = require('./resizer-stream-factory');
 
-if (!fs.existsSync(UPLOAD_DIR)) {
-  fs.mkdirSync(UPLOAD_DIR);
-};
+if (!fs.existsSync(config.uploadDir)) {
+  fs.mkdirSync(config.uploadDir);
+}
+
+function getFileName(req) {
+  const path = url.parse(req.url).pathname;
+  const fileName = `${path.slice(path.lastIndexOf('/'))}`;
+  return fileName;
+}
+
+function validateRequest(req) {
+  if (req.method === 'GET') return 'GET is not supported';
+  if (!getFileName(req)) return 'Empty filename';
+  if (!config.allowedContentTypes.includes(req.headers['content-type']))
+    return `Content type '${req.headers['content-type'] || ''}' is not allowed`;
+  if (req.headers['content-length'] > config.maxFIleSizeInBytes)
+    return `Maximum file size is ${config.maxFIleSizeInBytes} bytes`;
+  return '';
+}
 
 createServer((req, res) => {
-  const fileName = require('url').parse(req.url).pathname;
-  const filePath = `${UPLOAD_DIR}${fileName.slice(fileName.lastIndexOf('/'))}`;
-  req.pipe(fs.createWriteStream(filePath));
-  req.on('end', function() {
-    res.end(`File ${fileName} uploaded successfully`);
-  });
-}).listen(SERVER_PORT, () => {
-  console.log(`Server started on port ${SERVER_PORT}`);
+  const err = validateRequest(req);
+  if (!err) {
+    const fileName = getFileName(req);
+    req.pipe(getResizer(fileName));
+    req.on('end', () => {
+      res.end(`File ${fileName} uploaded successfully`);
+    });
+  } else {
+    res.statusCode = 400;
+    res.end(err);
+  }
+}).listen(config.serverPort, () => {
+  console.log(`Server started on port ${config.serverPort}`);
 });
