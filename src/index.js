@@ -11,7 +11,7 @@ if (!fs.existsSync(config.uploadDir)) {
 
 function getFileName(req) {
   const path = url.parse(req.url).pathname;
-  const fileName = `${path.slice(path.lastIndexOf('/'))}`;
+  const fileName = `${path.slice(path.lastIndexOf('/') + 1)}`;
   return fileName;
 }
 
@@ -29,9 +29,11 @@ createServer((req, res) => {
   const err = validateRequest(req);
   if (!err) {
     const fileName = getFileName(req);
-    req.pipe(getResizer(fileName, config.uploadDir, config.resizeOptions));
+    const resizer = getResizer(fileName, config.uploadDir, config.resizeOptions);
+    req.pipe(resizer.resizerStream);
+    console.log(resizer.resizedFiles);
     req.on('end', () => {
-      res.end(`File ${fileName} uploaded successfully`);
+      res.end(`File ${fileName} uploaded successfully. Resized files ${resizer.resizedFiles}`);
     });
   } else {
     res.statusCode = 400;

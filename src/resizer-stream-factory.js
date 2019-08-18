@@ -2,15 +2,17 @@ const sharp = require('sharp');
 const fs = require('fs');
 
 function getResizer(fileName, folder, resizeOptions) {
-  const resizer = sharp();
-  resizeOptions.forEach(resizeOption => {
-    const filePath = fs.createWriteStream(`${folder}${fileName.replace('.', `.${resizeOption.suffix}.`)}`);
-    resizer
+  const resizerStream = sharp();
+  const resizedFiles = resizeOptions.map(resizeOption => {
+    const filePath = `${folder}/${fileName.replace('.', `.${resizeOption.suffix}.`)}`;
+    const fileStream = fs.createWriteStream(filePath);
+    resizerStream
       .clone()
       .resize(resizeOption.width, resizeOption.height, { fit: 'inside' })
-      .pipe(filePath);
+      .pipe(fileStream);
+    return filePath;
   });
-  return resizer;
+  return { resizerStream, resizedFiles };
 }
 
 module.exports = { getResizer };
