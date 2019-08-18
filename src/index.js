@@ -29,7 +29,7 @@ createServer((req, res) => {
   const err = validateRequest(req);
   if (!err) {
     const fileName = getFileName(req);
-    req.pipe(getResizer(fileName));
+    req.pipe(getResizer(fileName, config.resizeOptions));
     req.on('end', () => {
       res.end(`File ${fileName} uploaded successfully`);
     });

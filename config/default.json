@@ -1,4 +1,9 @@
 {
   "allowedContentTypes": ["image/png", "image/jpg"],
-  "maxFIleSizeInBytes": 32000000
+  "maxFIleSizeInBytes": 32000000,
+  "resizeOptions": [
+    { "suffix": "2048", "width": 2048, "height": 2048 },
+    { "suffix": "1024", "width": 1024, "height": 1024 },
+    { "suffix": "300", "width": 300, "height": 300 }
+  ]
 }
