@@ -8,9 +8,9 @@ cloudinary.config({
 });
 
 async function uploadImage(filePath) {
-  const fileId = filePath.slice(filePath.lastIndexOf('/') + 1).slice(0, filePath.lastIndexOf('.'));
-  console.log(`fileId=${fileId}`);
-  const response = await cloudinary.v2.uploader.upload(filePath, { public_id: fileId });
+  const fileName = filePath.slice(filePath.lastIndexOf('/') + 1);
+  const fileId = fileName.slice(0, fileName.lastIndexOf('.'));
+  const response = await cloudinary.uploader.upload(filePath, { public_id: fileId });
   return response.url;
 }
 

@@ -1,4 +1,4 @@
-//require('appmetrics-dash').attach();
+// require('appmetrics-dash').attach();
 const { createServer } = require('http');
 const fs = require('fs');
 const url = require('url');
@@ -32,9 +32,17 @@ createServer((req, res) => {
     const fileName = getFileName(req);
     const resizer = getResizer(fileName, config.uploadDir, config.resizeOptions);
     req.pipe(resizer.resizerStream);
-    console.log(resizer.resizedFiles);
-    req.on('end', () => {
-      res.end(`File ${fileName} uploaded successfully. Resized files ${resizer.resizedFiles}`);
+    req.on('end', async () => {
+      const files = resizer.resizeTasks.map(item => item.filePath);
+      const resizeTasks = resizer.resizeTasks.map(item => item.streamFinishPromise);
+      let uploadedFilesUrls = [];
+      try {
+        await Promise.all(resizeTasks);
+        uploadedFilesUrls = await Promise.all(files.map(file => uploadImage(file)));
+      } catch (e) {
+        res.end(`Error. File ${fileName} was not uploaded. ${e}`);
+      }
+      res.end(`File ${fileName} uploaded successfully. Resized files - ${uploadedFilesUrls}`);
     });
   } else {
     res.statusCode = 400;
