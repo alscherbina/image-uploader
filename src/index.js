@@ -1,9 +1,10 @@
-require('appmetrics-dash').attach();
+//require('appmetrics-dash').attach();
 const { createServer } = require('http');
 const fs = require('fs');
 const url = require('url');
 const config = require('./config');
 const { getResizer } = require('./resizer-stream-factory');
+const { uploadImage } = require('./uploader');
 
 if (!fs.existsSync(config.uploadDir)) {
   fs.mkdirSync(config.uploadDir);
@@ -11,7 +12,7 @@ if (!fs.existsSync(config.uploadDir)) {
 
 function getFileName(req) {
   const path = url.parse(req.url).pathname;
-  const fileName = `${path.slice(path.lastIndexOf('/'))}`;
+  const fileName = path.slice(path.lastIndexOf('/'));
   return fileName;
 }
 
