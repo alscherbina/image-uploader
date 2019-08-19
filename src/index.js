@@ -12,7 +12,7 @@ if (!fs.existsSync(config.uploadDir)) {
 
 function getFileName(req) {
   const path = url.parse(req.url).pathname;
-  const fileName = `${path.slice(path.lastIndexOf('/') + 1)}`;
+  const fileName = path.slice(path.lastIndexOf('/') + 1);
   return fileName;
 }
 
