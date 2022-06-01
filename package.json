@@ -33,6 +33,6 @@
     "cloudinary": "^1.14.0",
     "config": "^3.2.2",
     "dotenv-safe": "^6.1.0",
-    "sharp": "^0.23.0"
+    "sharp": "^0.30.5"
   }
 }
